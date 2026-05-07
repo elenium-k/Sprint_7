@@ -3,24 +3,19 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import model.Courier;
 import model.CourierCreds;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import service.CourierClient;
-import service.CourierGenerator;
 
 import java.util.Arrays;
 import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
-
+import static utils.ApiConfig.BASE_URI;
 
 @RunWith(Parameterized.class)
 public class CourierLoginTest {
-
-    private static final String BASE_URI = "https://qa-scooter.praktikum-services.ru/";
 
     private final String login;
     private final String password;
@@ -28,6 +23,7 @@ public class CourierLoginTest {
     private String courierId;
 
     private CourierClient courierClient;
+    private static String testCourierId;
 
     public CourierLoginTest(String login, String password, int expectedStatusCode) {
         this.login = login;
@@ -39,40 +35,39 @@ public class CourierLoginTest {
     public void setUp() {
         RestAssured.baseURI = BASE_URI;
         courierClient = new CourierClient();
+        Courier testCourier = new Courier()
+                .withLogin("Persefoniy_Scooter_God")
+                .withPassword("password123")
+                .withFirstName("Персефоний");
+        Response createResponse = courierClient.create(testCourier);
+        testCourierId = createResponse.jsonPath().getString("id");
     }
 
     @Parameterized.Parameters
     public static Collection<Object[]> testData() {
-
-        Courier rightCourier = CourierGenerator.randomCourier();
-        Courier wrongCourier = new Courier().withLogin("1234").withPassword("4321");
-        Courier emptyLogin = new Courier().withLogin("").withPassword("passцщкв");
-        Courier emptyPassword = new Courier().withLogin("login").withPassword("");
-
         return Arrays.asList(new Object[][]{
-                {rightCourier.getLogin(), rightCourier.getPassword(), 200},
-                {wrongCourier.getLogin(), wrongCourier.getPassword(), 404},
-                {emptyLogin.getLogin(), emptyLogin.getPassword(), 400},
-                {emptyPassword.getLogin(), emptyPassword.getPassword(), 400}
+                // Успешный логин
+                {"Persefoniy_Scooter_God", "password123", 200},
+                // Ошибка в логине
+                {"wrong_Persefoniy_Scooter_God", "password123", 404},
+                // Ошибка в пароле
+                {"Persefoniy_Scooter_God", "wrong_password123", 404},
+                // Пустой логин
+                {"", "password123", 400},
+                // Пустой пароль
+                {"Persefoniy_Scooter_God", "", 400}
         });
     }
 
     @Test
     @DisplayName("Login courier param tests")
     public void loginCourierParamTests() {
-        if (expectedStatusCode == 200) {
-            Courier courier = new Courier()
-                    .withLogin(login)
-                    .withPassword(password)
-                    .withFirstName("Персефоний");
-
-            Response createResponse = courierClient.create(courier);
-            createResponse.then().statusCode(201);
-            courierId = createResponse.jsonPath().getString("id");
-        }
-
         Response response = courierClient.login(new CourierCreds(login, password));
         assertEquals(expectedStatusCode, response.getStatusCode());
+
+        if (expectedStatusCode == 200) {
+            courierId = response.jsonPath().getString("id");
+        }
     }
 
     @After

@@ -8,11 +8,10 @@ import service.OrderListClient;
 import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
+import static utils.ApiConfig.BASE_URI;
 
 
 public class OrderListTests {
-
-    private static final String BASE_URI = "https://qa-scooter.praktikum-services.ru/";
 
     @Before
     public void setUp() {
@@ -32,8 +31,6 @@ public class OrderListTests {
 
         System.out.println(response.getStatusCode());
         System.out.println(response.getBody().prettyPrint());
-
-
     }
 }
 

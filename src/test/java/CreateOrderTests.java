@@ -14,11 +14,10 @@ import java.util.Collection;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static utils.ApiConfig.BASE_URI;
 
 @RunWith(Parameterized.class)
 public class CreateOrderTests {
-
-    private static final String BASE_URI = "https://qa-scooter.praktikum-services.ru/";
 
     private String[] colors;
 

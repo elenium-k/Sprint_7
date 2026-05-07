@@ -44,4 +44,4 @@ build/
 .mvn/
 .allure/
 
-!target/allure-report/
+!target/allure-results/

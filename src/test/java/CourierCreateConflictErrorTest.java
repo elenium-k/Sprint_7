@@ -8,11 +8,11 @@ import org.junit.Before;
 import service.CourierClient;
 import service.CourierGenerator;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static utils.ApiConfig.BASE_URI;
 import org.junit.Test;
 
-public class CourierCreateConflictErrorTest {
-    private static final String BASE_URI = "https://qa-scooter.praktikum-services.ru"; // Исправлено: убран лишний /
 
+public class CourierCreateConflictErrorTest {
     private Courier firstCourier;
     private String firstCourierId;
     private CourierClient courierClient;
@@ -41,7 +41,9 @@ public class CourierCreateConflictErrorTest {
                 firstCourier.getFirstName()
         );
         Response response = courierClient.create(duplicateCourier);
-        response.then().statusCode(equalTo(409));
+        response.then()
+                .statusCode(equalTo(409))
+                .body("message", equalTo("Этот логин уже используется")); // добавлена проверка тела ответа
     }
 
     @After

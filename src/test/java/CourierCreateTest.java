@@ -12,6 +12,8 @@ import service.CourierGenerator;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static utils.ApiConfig.BASE_URI;
+
 import org.junit.Test;
 
 
@@ -19,7 +21,6 @@ import org.junit.Test;
 @RunWith(Parameterized.class)
 public class CourierCreateTest {
 
-    private static final String BASE_URI = "https://qa-scooter.praktikum-services.ru/";
 
     private final String login;
     private final String password;
@@ -45,15 +46,15 @@ public class CourierCreateTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> testData() {
-        Courier courier1 = CourierGenerator.randomCourier();
-        Courier courier2 = CourierGenerator.withNullLogin();
-        Courier courier4 = CourierGenerator.withNullPassword();
+        Courier okCourier = CourierGenerator.randomCourier(); // внесла изменения в названия курьеров
+        Courier noLoginCourier = CourierGenerator.withNullLogin();
+        Courier noPasswordCourier = CourierGenerator.withNullPassword();
 
         return Arrays.asList(new Object[][]{
 
-                {courier1.getLogin(), courier1.getPassword(), courier1.getFirstName(), 201},
-                {courier2.getLogin(), courier2.getPassword(), courier2.getFirstName(), 400},
-                {courier4.getLogin(), courier4.getPassword(), courier4.getFirstName(), 400},
+                {okCourier.getLogin(), okCourier.getPassword(), okCourier.getFirstName(), 201},
+                {noLoginCourier.getLogin(), noLoginCourier.getPassword(), noLoginCourier.getFirstName(), 400},
+                {noPasswordCourier.getLogin(), noPasswordCourier.getPassword(), noPasswordCourier.getFirstName(), 400},
         });
     }
 
