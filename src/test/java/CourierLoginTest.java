@@ -7,6 +7,7 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import service.CourierClient;
+import service.CourierGenerator;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,10 +36,7 @@ public class CourierLoginTest {
     public void setUp() {
         RestAssured.baseURI = BASE_URI;
         courierClient = new CourierClient();
-        Courier testCourier = new Courier()
-                .withLogin("Persefoniy_Scooter_God")
-                .withPassword("password123")
-                .withFirstName("Персефоний");
+        Courier testCourier = CourierGenerator.testCourier();
         Response createResponse = courierClient.create(testCourier);
         testCourierId = createResponse.jsonPath().getString("id");
     }

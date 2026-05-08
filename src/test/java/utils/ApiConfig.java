@@ -9,6 +9,5 @@ public class ApiConfig {
     @BeforeClass
     public static void setupBaseUrl() {
         RestAssured.baseURI = BASE_URI;
-        RestAssured.useRelaxedHTTPSValidation();
     }
 }

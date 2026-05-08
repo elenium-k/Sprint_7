@@ -1,3 +1,4 @@
+import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
@@ -39,6 +40,7 @@ public class CourierCreateTest {
     }
 
     @Before
+    @Step("Открываем страницу сервиса и ")
     public void setUp() {
         RestAssured.baseURI = BASE_URI;
         courierClient = new CourierClient();
